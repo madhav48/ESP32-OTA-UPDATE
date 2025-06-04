@@ -78,6 +78,8 @@ openssl rsa -pubout -in "%KEY_DIR%\private.pem" -out "%KEY_DIR%\public.pem"
 type %USERPROFILE%\.firmware_keys\public.pem
 ```
 
+> **Note:** Copy the public key (printed in the terminal) as this will be required while verifying the signature on the ESP32.
+
 ---
 
 ### Node.js Setup
@@ -163,7 +165,5 @@ With a single CLI command, this package automates:
 - Secure S3 upload
 - Metadata storage in DB
 - MQTT notification to all ESP32 devices via AWS IoT
-
-Future work involves completing the ESP32 client-side OTA handler for full system integration.
 
 ---
