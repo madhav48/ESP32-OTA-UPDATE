@@ -125,3 +125,34 @@ factory,    app,  factory, 0x10000,    0x150000
 ota_0,      app,  ota_0,   0x160000,   0xD0000  
 spiffs,     data, spiffs,  0x230000,   0x1D0000   
 ```
+
+
+
+## Custom Libraries
+
+This architecture uses two custom-built libraries that encapsulate the OTA update process logic:
+
+### 1. OTAUpdateManager (used in `ota_loader`)
+
+Located in: `ota_loader/components/OTAUpdateManager/`
+
+**Purpose**: Handles the core logic for downloading, verifying, and flashing firmware updates.
+
+**Responsibilities**:
+- **NVSStorageHandler**: Manages persistent version tracking and metadata using NVS storage.
+- **HTTPDownloader**: Downloads firmware binaries and signatures from a remote server (e.g., AWS S3).
+- **SignatureVerifier**: Validates the firmware integrity using SHA256 hash and RSA digital signature.
+- **FirmwareFlasher**: Writes the new firmware binary to the OTA partition using ESP-IDF's `esp_ota_ops` API.
+- **OTAUpdateManager**: Coordinates the above components and manages the complete OTA workflow.
+
+---
+
+### 2. OTAUpdateChecker (used in `main_app`)
+
+Located in: `main_app/components/OTAUpdateChecker/`
+
+**Purpose**: Performs lightweight checks within the main application to determine whether an update is required.
+
+**Responsibilities**:
+- Compares current firmware version with the received version from MQTT payload.
+- Triggers a reboot and switches the boot partition to invoke the bootloader (`ota_loader`) if an update is necessary.
